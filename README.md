@@ -1,5 +1,9 @@
 # capstoneproject
+## 📄 Final Report
 
+You can view the complete project report here:
+
+[Dynamic Pricing for Urban Parking Lots](https://drive.google.com/file/d/1sxdBXx-M32QrWaI0d3H4AjRN4i6QaEFL/view?usp=sharing)
 
 
 
