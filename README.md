@@ -141,4 +141,6 @@ Deployed dashboards via Bokeh Server or Streamlit
 Integration with smart parking meters for live pricing
 
 
- 
+ Final Project
+ [👉 View Full Report (PDF)](./docs/Dynamic_Pricing_for_Urban_ParkingLots.pdf)
+
