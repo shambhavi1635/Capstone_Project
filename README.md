@@ -19,13 +19,14 @@
 
 ```mermaid
 graph TD
-    A[📂 Raw Input Data (CSV / Simulated Stream)] --> B[🧹 Data Cleaning & Interpolation]
-    B --> C[🧠 Feature Engineering]
-    C --> D1[⚙️ Model 1: Rule-Based Pricing]
-    C --> D2[📈 Model 2: Demand-Based Pricing]
-    C --> D3[📊 Model 3: Competition-Aware Pricing]
-    D1 --> E[💰 Price Output]
+    A[Raw Input Data - CSV or Stream] --> B[Data Cleaning and Interpolation]
+    B --> C[Feature Engineering]
+    C --> D1[Model 1: Rule-Based Pricing]
+    C --> D2[Model 2: Demand-Based Pricing]
+    C --> D3[Model 3: Competition-Aware Pricing]
+    D1 --> E[Price Output]
     D2 --> E
     D3 --> E
-    E --> F[📊 Real-Time Visualization (Bokeh)]
-    F --> G[🖥️ User Dashboard or Monitoring Panel]
+    E --> F[Real-Time Visualization (Bokeh)]
+    F --> G[User Dashboard or Monitoring Panel]
+
