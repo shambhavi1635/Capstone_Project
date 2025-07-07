@@ -143,11 +143,8 @@ Integration with smart parking meters for live pricing
 
 
 
-## Final Report
-
-You can view the complete project report here:
-
 [👉 Click to view the Report (PDF)](./docs/Dynamic_Pricing_for_Urban_ParkingLots.pdf)
+
 
 
 
