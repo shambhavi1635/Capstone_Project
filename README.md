@@ -1,8 +1,8 @@
 # capstoneproject
 ```
 [Dynamic Pricing for Urban Parking Lots](./Dynamic_Pricing_for_Urban_ParkingLots.pdf)
-```
 ---
+```
 
 ## 🔧 Tech Stack
 
