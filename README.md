@@ -1,6 +1,6 @@
 # capstoneproject
 
-[Dynamic Pricing for Urban Parking Lots](https://github.com/shambhavi1635/capstoneproject/blob/main/Dynamic_Pricing_for_Urban_ParkingLots.pdf)
+
 
 
 
@@ -87,6 +87,6 @@ You can view the complete project report here:
 [Dynamic Pricing for Urban Parking Lots](https://drive.google.com/file/d/1sxdBXx-M32QrWaI0d3H4AjRN4i6QaEFL/view?usp=sharing)
 
 
-
+[Dynamic Pricing for Urban Parking Lots](https://github.com/shambhavi1635/capstoneproject/blob/main/Dynamic_Pricing_for_Urban_ParkingLots.pdf)
 
 
