@@ -79,14 +79,14 @@ This project simulates a real-time dynamic pricing system for 14 urban parking l
 - Live traffic/occupancy APIs
 
 ---
-```
+
 ## 📄 Final Report
 
 You can view the complete project report here:
 
 [Dynamic Pricing for Urban Parking Lots](./docs/Dynamic_Pricing_for_Urban_ParkingLots.pdf)
 
-```
+
 
 
 
