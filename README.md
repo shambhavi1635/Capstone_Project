@@ -139,8 +139,12 @@ Real-world APIs for traffic/occupancy input
 Deployed dashboards via Bokeh Server or Streamlit
 
 Integration with smart parking meters for live pricing
+```
 
+## 📄 Final Report
 
- Final Project
- [👉 Click to view the Report (PDF)](./docs/Dynamic%20Pricing%20for%20Urban%20Parking%20Lots.pdf)
+You can view the complete project report here:
+
+[👉 Click to view the Report (PDF)](./Dynamic%20Pricing%20for%20Urban%20Parking%20Lots.pdf)
+
 
