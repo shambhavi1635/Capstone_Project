@@ -34,7 +34,7 @@ graph TD
     F --> G["User Dashboard or Monitoring Panel"]
 
 ```
-
+```
 Project Architecture & Workflow
 This project simulates a real-time dynamic pricing system for 14 urban parking lots using a combination of economic logic, data engineering, and visualization techniques. Below is a breakdown of the architectural components and the workflow followed.
 
@@ -141,10 +141,12 @@ Deployed dashboards via Bokeh Server or Streamlit
 Integration with smart parking meters for live pricing
 ```
 
+```
 ## 📄 Final Report
 
 You can view the complete project report here:
 
-[👉 Click to view the Report (PDF)](./Dynamic%20Pricing%20for%20Urban%20Parking%20Lots.pdf)
+[👉 Click to view the Report (PDF)](./Dynamic_Pricing_for_Urban_ParkingLots.pdf)
 
+```
 
