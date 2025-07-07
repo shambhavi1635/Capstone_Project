@@ -86,5 +86,4 @@ You can view the complete project report here:
 
 [📄 Click to view the Final Report (PDF)](./docs/Dynamic_Pricing_for_Urban_ParkingLots.pdf)
 
-[Open test file](https://github.com/shambhavi1635/capstoneproject/blob/main/Dynamic_Pricing_for_Urban_ParkingLots.pdf)
-```
+
