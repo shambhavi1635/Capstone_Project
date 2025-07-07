@@ -84,7 +84,8 @@ This project simulates a real-time dynamic pricing system for 14 urban parking l
 
 You can view the complete project report here:
 
-[📄 Click to view the Final Report (PDF)](./docs/Dynamic_Pricing_for_Urban_ParkingLots.pdf)
+[📄 Click to view the Final Report (PDF)](https://github.com/shambhavi1635/capstoneproject/blob/main/docs/Dynamic_Pricing_for_Urban_ParkingLots.pdf)
+
 
 
 
