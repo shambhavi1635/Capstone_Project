@@ -38,6 +38,11 @@ graph TD
 
 
 
+## 📄 Final Report
+
+You can view the complete project report here:
+
+[👉 Click to view the Report (PDF)](./docs/Dynamic Pricing for Urban Parking Lots.pdf)
 
 
 
