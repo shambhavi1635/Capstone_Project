@@ -30,6 +30,31 @@ graph TD
     E --> F["Real-Time Visualization with Bokeh"]
     F --> G["User Dashboard or Monitoring Panel"]
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ##  Project Architecture & Workflow
 
 This project simulates a real-time dynamic pricing system for 14 urban parking lots using a combination of economic logic, data engineering, and visualization techniques. Below is a breakdown of the architectural components and the workflow followed.
