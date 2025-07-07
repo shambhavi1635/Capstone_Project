@@ -37,24 +37,24 @@ graph TD
 
 ---
 
-## 🔄 Project Architecture & Workflow
+##  Project Architecture & Workflow
 
 This project simulates a real-time dynamic pricing system for 14 urban parking lots using a combination of economic logic, data engineering, and visualization techniques.
 
-### 1. 🔹 Data Ingestion
+### 1.  Data Ingestion
 - Raw data is loaded from a `.csv` file or simulated as a real-time stream.
 - Each row includes timestamped info: Occupancy, Queue Length, Traffic, Special Day, Competitor Prices, Vehicle Type Weights.
 
-### 2. 🧹 Data Cleaning & Preprocessing
+### 2.  Data Cleaning & Preprocessing
 - Missing values interpolated.
 - Datetime column (`t`) created and sorted.
 
-### 3. 🧠 Feature Engineering
+### 3.  Feature Engineering
 - Proximity features using `BallTree`:
   - `distance_to_nearest_parking`
   - `num_parkings_within_500m`
 
-### 4. 🤖 Pricing Models
+### 4.  Pricing Models
 #### Model 1: Rule-Based
 - Uses thresholds on occupancy, traffic, queue length, etc.
 
@@ -66,14 +66,14 @@ This project simulates a real-time dynamic pricing system for 14 urban parking l
 #### Model 3: Competition-Aware
 - Adds competitor pricing impact to Model 2.
 
-### 5. 🔄 Real-Time Simulation
+### 5.  Real-Time Simulation
 - Pathway streams data row-by-row with `sleep()` delays.
 
-### 6. 📊 Visualization
+### 6.  Visualization
 - Bokeh plots for price, competitor price, and demand.
 - Controlled via Panel in Colab using `output_notebook()`.
 
-### 7. 🚀 Deployment Possibilities
+### 7.  Deployment Possibilities
 - Streamlit or Bokeh Server
 - Smart parking meter integration
 - Live traffic/occupancy APIs
