@@ -1,6 +1,6 @@
 # capstoneproject
 
-[Dynamic Pricing for Urban Parking Lots](./docs/Dynamic_Pricing_for_Urban_ParkingLots.pdf)
+[Dynamic Pricing for Urban Parking Lots](./Dynamic_Pricing_for_Urban_ParkingLots.pdf)
 
 ---
 
