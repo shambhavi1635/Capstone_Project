@@ -15,6 +15,9 @@
 | **Version Control**       | Git, GitHub                                                                          |
 | **Miscellaneous**         | `time.sleep`, `random`, `datetime` (for simulation and time-based operations)        |
 
+
+
+
 ## 🏗️ Architecture Diagram
 
 ```mermaid
@@ -29,13 +32,6 @@ graph TD
     D3 --> E
     E --> F["Real-Time Visualization with Bokeh"]
     F --> G["User Dashboard or Monitoring Panel"]
-
-
-
-
-
-
-
 
 
 
