@@ -77,6 +77,28 @@ def test_responsiveness_is_negative_for_the_submitted_model1_shape():
     assert occupancy_responsiveness(df, "price_model1") == pytest.approx(-1.0)
 
 
+def test_metrics_do_not_need_scipy(monkeypatch, prices):
+    """SciPy is not a declared dependency, so no metric may reach for it.
+
+    ``Series.corr(method="spearman")`` does, which failed CI while passing on a
+    developer machine that happened to have SciPy installed.
+    """
+    for name in ("scipy", "scipy.stats"):
+        monkeypatch.setitem(__import__("sys").modules, name, None)
+
+    sample = prices.head(2000)
+    assert occupancy_responsiveness(sample, "price_model1") > 0
+    assert not compare_models(sample, CFG).isna().any().any()
+
+
+def test_responsiveness_matches_spearman_definition():
+    """Pearson-on-ranks is Spearman; ties included."""
+    df = frame(["LOT_01"] * 6, [5.0, 5.0, 7.0, 9.0, 9.0, 11.0],
+               occupancy=[0.1, 0.2, 0.3, 0.4, 0.5, 0.6])
+    expected = df["price_model1"].rank().corr(df["occupancy_rate"].rank())
+    assert occupancy_responsiveness(df, "price_model1") == pytest.approx(expected)
+
+
 def test_compare_models_covers_every_model(prices):
     table = compare_models(prices, CFG)
     assert list(table.index) == [m.replace("price_", "") for m in MODELS]

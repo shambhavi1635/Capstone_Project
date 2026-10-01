@@ -48,8 +48,13 @@ def occupancy_responsiveness(prices: pd.DataFrame, model: str) -> float:
     Rank-based, so it rewards getting the *ordering* right without assuming the
     relationship is linear. A dynamic pricing model should be strongly positive;
     the submitted Model 1 would score negative here.
+
+    Computed as Pearson correlation on ranks, which is the definition of
+    Spearman and gives identical results. ``corr(method="spearman")`` would make
+    pandas import SciPy, and pulling in SciPy for one correlation is not worth
+    the install weight.
     """
-    return float(prices[model].corr(prices["occupancy_rate"], method="spearman"))
+    return float(prices[model].rank().corr(prices["occupancy_rate"].rank()))
 
 
 def revenue_proxy(prices: pd.DataFrame, model: str) -> float:

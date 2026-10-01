@@ -85,8 +85,12 @@ def load_dataset(path: str | Path | None = None) -> pd.DataFrame:
     # (the original script drew randoms per row, so repeated readings diverged).
     # The real measurements agree, so collapsing them loses no observation and
     # leaves a well-formed panel of one row per lot per timestamp.
+    # `kind="stable"` matters: with an unstable sort, which member of a duplicate
+    # group counts as "first" can vary by platform and NumPy version, so the kept
+    # QueueLength -- and every price derived from it -- would differ between
+    # machines.
     before_dedup = len(df)
-    df = df.sort_values(["lot_id", "Timestamp"]).drop_duplicates(
+    df = df.sort_values(["lot_id", "Timestamp"], kind="stable").drop_duplicates(
         subset=["lot_id", "Timestamp"], keep="first"
     )
     duplicates_dropped = before_dedup - len(df)
