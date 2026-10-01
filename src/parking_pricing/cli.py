@@ -46,6 +46,11 @@ def build_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="Also render the comparison figures into the output directory.",
     )
+    parser.add_argument(
+        "--report",
+        action="store_true",
+        help="Print the model-comparison report and write it to the output directory.",
+    )
     return parser
 
 
@@ -69,6 +74,18 @@ def main(argv: list[str] | None = None) -> int:
         print(f"  {model:<13} mean {series.mean():6.2f}  min {series.min():6.2f}  max {series.max():6.2f}")
     for name, path in paths.items():
         print(f"wrote {name}: {path}")
+
+    if args.report:
+        from .evaluate import compare_models, format_report
+
+        report = format_report(prices, cfg)
+        print()
+        print(report)
+
+        report_path = args.out_dir / "model_comparison.txt"
+        report_path.write_text(report, encoding="utf-8")
+        compare_models(prices, cfg).to_csv(args.out_dir / "model_comparison.csv")
+        print(f"\nwrote report: {report_path}")
 
     if args.plots:
         from .plots import render_all

@@ -1,0 +1,66 @@
+name: tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # The pipeline deliberately avoids Pathway so it runs on current Python,
+        # including 3.13, where Pathway has no wheels.
+        python-version: ["3.10", "3.11", "3.12", "3.13"]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e ".[dev]"
+
+      - name: Run tests
+        run: python -m pytest -q
+
+  pipeline:
+    # Proves the documented quick-start actually works from a clean checkout.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install
+        run: pip install -e .
+
+      - name: Run the pipeline end to end
+        run: parking-pricing --report --plots
+
+      - name: Check the expected artefacts were written
+        run: |
+          test -s outputs/prices.csv
+          test -s outputs/daily_summary.csv
+          test -s outputs/model_comparison.csv
+          test -s outputs/price_over_time.png
+          test -s outputs/price_vs_occupancy.png
+          test -s outputs/price_by_lot.png
+          echo "rows: $(($(wc -l < outputs/prices.csv) - 1))"
+          test "$(($(wc -l < outputs/prices.csv) - 1))" -eq 18282
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: pipeline-outputs
+          path: outputs/
