@@ -1,6 +1,6 @@
 # Dynamic Pricing for Urban Parking Lots
 
-[![tests](https://github.com/shambhavi1635/capstoneproject/actions/workflows/tests.yml/badge.svg)](https://github.com/shambhavi1635/capstoneproject/actions/workflows/tests.yml)
+[![tests](https://github.com/shambhavi1635/Capstone_Project/actions/workflows/tests.yml/badge.svg)](https://github.com/shambhavi1635/Capstone_Project/actions/workflows/tests.yml)
 
 Three pricing models over 14 urban parking lots, 1,300 timesteps each, from
 4 October to 19 December 2016. Each model prices **every lot at every
