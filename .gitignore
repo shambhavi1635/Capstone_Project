@@ -1,0 +1,12 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+.ipynb_checkpoints/
+*.egg-info/
+build/
+dist/
+
+# Generated pipeline outputs; rerun `python -m parking_pricing.cli` to rebuild.
+outputs/

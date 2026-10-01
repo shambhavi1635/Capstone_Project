@@ -1,0 +1,9 @@
+# Optional: the original Pathway streaming path and Bokeh dashboards.
+#
+# Pathway publishes no wheels for Python 3.13 and does not support Windows
+# natively -- use Python 3.10-3.12, or WSL/Linux/macOS, for this file.
+# The core pipeline in requirements.txt does not need any of it.
+-r requirements.txt
+pathway>=0.8
+bokeh>=3.2
+panel>=1.3

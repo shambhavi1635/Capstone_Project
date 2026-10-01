@@ -1,96 +1,208 @@
-# capstoneproject
-## 📄 Final Report
+# Dynamic Pricing for Urban Parking Lots
 
-You can view the complete project report here:
+Three pricing models over 14 urban parking lots, 1,300 timesteps each, from
+4 October to 19 December 2016. Each model prices **every lot at every
+timestep**, and every price is held inside a configured band around the base
+price.
 
-[Dynamic Pricing for Urban Parking Lots](https://drive.google.com/file/d/1sxdBXx-M32QrWaI0d3H4AjRN4i6QaEFL/view?usp=sharing)
+| Model | Idea | Price |
+|---|---|---|
+| **1 · Rule-based** | Fuller lot, higher price | `base · (1 + α · occupancy)` |
+| **2 · Demand** | Weighted demand from occupancy, queue, traffic, special days, vehicle mix | `base · (1 + λ · (demand_norm − ½))` |
+| **3 · Competitive** | Model 2, pulled toward nearby lots' prices | Model 2 ± competitor gap, minus a full-lot discount |
 
-
-
-
-## 🔧 Tech Stack
-
-| Category                 | Tools / Libraries Used                                                               |
-|--------------------------|--------------------------------------------------------------------------------------|
-| **Programming Language** | Python 3                                                                             |
-| **Data Manipulation**    | NumPy, Pandas                                                                        |
-| **Visualization**        | Bokeh, Matplotlib, Panel, IPython.display                                           |
-| **Streaming & Pipelines**| Pathway (real-time data streaming and transformation)                                |
-| **Geospatial Analysis**  | scikit-learn (BallTree), geopy                                                       |
-| **Notebook Environment** | Google Colab                                                                         |
-| **Version Control**      | Git, GitHub                                                                          |
-| **Miscellaneous**        | `time.sleep`, `random`, `datetime`                                                  |
+![Daily mean price by model](docs/images/price_over_time.png)
 
 ---
 
-## 🏗️ Architecture Diagram
+## Quick start
 
-```mermaid
-graph TD
-    A["Raw Input Data - CSV or Stream"] --> B["Data Cleaning"]
-    B --> C["Feature Engineering"]
-    C --> D1["Model 1 - Rule-Based Pricing"]
-    C --> D2["Model 2 - Demand-Based Pricing"]
-    C --> D3["Model 3 - Competition-Aware Pricing"]
-    D1 --> E["Price Output"]
-    D2 --> E
-    D3 --> E
-    E --> F["Real-Time Visualization with Bokeh"]
-    F --> G["User Dashboard or Monitoring Panel"]
+```bash
+pip install -e .
+```
+
+```bash
+parking-pricing --plots
+```
+
+That writes `outputs/prices.csv` (one row per lot per timestep),
+`outputs/daily_summary.csv`, and three figures. Expected output:
+
+```
+Priced 18,282 lot-timestamps across 14 lots
+  2016-10-04 07:59:00  ->  2016-12-19 16:30:00
+  price band: 5.00 - 20.00
+  price_model1  mean  15.10  min  10.03  max  20.00
+  price_model2  mean   8.52  min   5.10  max  14.75
+  price_model3  mean   8.50  min   5.13  max  14.75
+```
+
+`pip install -e .` puts the `parking-pricing` command on your path. To run from
+a checkout without installing, use `PYTHONPATH=src python -m parking_pricing.cli`
+instead (`set PYTHONPATH=src` on Windows `cmd`).
+
+Run the tests — `pytest` picks up `src/` from `pyproject.toml`, so no install is
+needed:
+
+```bash
+pip install pytest && python -m pytest
+```
+
+### Using it as a library
+
+```python
+from parking_pricing import PricingConfig, run_pipeline
+
+prices = run_pipeline(cfg=PricingConfig(base_price=20.0))
+prices.groupby("lot_id")["price_model3"].mean()
 ```
 
 ---
 
-##  Project Architecture & Workflow
+## Results
 
-This project simulates a real-time dynamic pricing system for 14 urban parking lots using a combination of economic logic, data engineering, and visualization techniques.
+### Price responds to occupancy — in the right direction
 
-### 1.  Data Ingestion
-- Raw data is loaded from a `.csv` file or simulated as a real-time stream.
-- Each row includes timestamped info: Occupancy, Queue Length, Traffic, Special Day, Competitor Prices, Vehicle Type Weights.
+![Price response to occupancy](docs/images/price_vs_occupancy.png)
 
-### 2.  Data Cleaning & Preprocessing
-- Missing values interpolated.
-- Datetime column (`t`) created and sorted.
+All three models rise with occupancy. Model 3 turns *down* above ~90% occupancy:
+that is the full-lot rule, shedding price to divert drivers to a cheaper
+neighbour rather than letting a queue build at the gate.
 
-### 3.  Feature Engineering
-- Proximity features using `BallTree`:
-  - `distance_to_nearest_parking`
-  - `num_parkings_within_500m`
+### Isolated lots charge the most
 
-### 4.  Pricing Models
-#### Model 1: Rule-Based
-- Uses thresholds on occupancy, traffic, queue length, etc.
+![Mean competitive price by lot](docs/images/price_by_lot.png)
 
-#### Model 2: Demand-Based
-\[
-\text{Demand} = \alpha - \beta \cdot \text{Price} + \gamma \cdot (\text{Occupancy} + \text{Traffic})
-\]
-
-#### Model 3: Competition-Aware
-- Adds competitor pricing impact to Model 2.
-
-### 5.  Real-Time Simulation
-- Pathway streams data row-by-row with `sleep()` delays.
-
-### 6.  Visualization
-- Bokeh plots for price, competitor price, and demand.
-- Controlled via Panel in Colab using `output_notebook()`.
-
-### 7.  Deployment Possibilities
-- Streamlit or Bokeh Server
-- Smart parking meter integration
-- Live traffic/occupancy APIs
+The four lots with no rival within 500 m hold the highest mean prices. The six
+co-located lots — all within metres of one another — are pulled down toward each
+other and occupy the bottom of the table. This is the competitive mechanism
+doing visible work, and it is only observable because pricing is now per-lot.
 
 ---
 
-## 📄 Final Report
+## How it works
 
-You can view the complete project report here:
+```mermaid
+graph TD
+    A["data/parking_dataset.csv"] --> B["data.load_dataset<br/>validate · assign lot_id · dedupe"]
+    B --> C["features.proximity_features<br/>per unique lot"]
+    B --> D["features.add_demand_features<br/>normalise drivers to 0-1"]
+    C --> E["competitor_groups<br/>lot -> rivals within 500 m"]
+    D --> F["Model 1 · rule-based"]
+    D --> G["Model 2 · demand"]
+    G --> H["Model 3 · competitive"]
+    E --> H
+    F --> I["outputs/prices.csv"]
+    G --> I
+    H --> I
+    I --> J["plots.py · figures"]
+```
 
-[Dynamic Pricing for Urban Parking Lots](https://drive.google.com/file/d/1sxdBXx-M32QrWaI0d3H4AjRN4i6QaEFL/view?usp=sharing)
+| Module | Responsibility |
+|---|---|
+| [`config.py`](src/parking_pricing/config.py) | Every tunable constant, as dataclasses |
+| [`data.py`](src/parking_pricing/data.py) | Loading, validation, lot identity, deduplication |
+| [`features.py`](src/parking_pricing/features.py) | Haversine geography, competitor sets, demand normalisation |
+| [`models.py`](src/parking_pricing/models.py) | The three pricing models |
+| [`pipeline.py`](src/parking_pricing/pipeline.py) | Orchestration and output |
+| [`plots.py`](src/parking_pricing/plots.py) | Headless figures |
+| [`cli.py`](src/parking_pricing/cli.py) | Command-line entry point |
 
+### Design decisions worth knowing
 
-[Dynamic Pricing for Urban Parking Lots](https://github.com/shambhavi1635/capstoneproject/blob/main/Dynamic_Pricing_for_Urban_ParkingLots.pdf)
+**Prices are clamped.** Every model's output is clipped to `[0.5×, 2×]` the base
+price. An unbounded dynamic price is not a pricing policy; it is a liability.
 
+**Normalisation bounds come from the weights, not the data.** Model 2 derives
+its demand range from the configured coefficients, so an individual row prices
+identically whether it arrives alone or inside a batch. A model whose output
+depends on what else is in the window cannot be deployed against a live stream.
 
+**A lot is never its own competitor.** Proximity is computed on one row per lot,
+and the function raises if handed a per-timestamp frame — the exact mistake that
+produced "1,312 competitors" in the original.
+
+### Tuning
+
+Everything adjustable lives in [`config.py`](src/parking_pricing/config.py):
+
+```python
+from parking_pricing import PricingConfig, run_pipeline
+from parking_pricing.config import Model2Config
+
+cfg = PricingConfig(
+    base_price=15.0,
+    competitor_radius_m=1000.0,
+    model2=Model2Config(traffic_weight=0.7),   # traffic raises price instead
+)
+prices = run_pipeline(cfg=cfg)
+```
+
+---
+
+## Data
+
+`data/parking_dataset.csv` — 18,368 rows, 14 lots, 1,312 timesteps each.
+
+| Column | Meaning |
+|---|---|
+| `Latitude`, `Longitude` | Lot coordinates; these identify the lot |
+| `Timestamp` | Reading time |
+| `Occupancy`, `Capacity` | Vehicles parked, and spaces available |
+| `QueueLength` | Vehicles waiting (0–10) |
+| `TrafficLevel` | 0 low, 1 medium, 2 high |
+| `IsSpecialDay` | 1 on event or holiday dates |
+| `VehicleTypeWeight` | 1.0 small, 1.5 SUV, 2.0 EV |
+
+`QueueLength`, `TrafficLevel`, `IsSpecialDay` and `VehicleTypeWeight` are
+**simulated**, not observed. They were generated once and committed so results
+are reproducible; the original script regenerated them unseeded on every run.
+
+Loading drops 86 rows: 152 rows share a `(lot, timestamp)` with another row, and
+each such group is collapsed to one reading. See
+[`docs/model-changes.md` §9](docs/model-changes.md).
+
+---
+
+## Streaming
+
+The original ran through [Pathway](https://pathway.com/) with Bokeh dashboards.
+The core pipeline deliberately does not depend on either: Pathway publishes no
+wheels for Python 3.13 and does not run natively on Windows, which would make
+the project unrunnable for most readers.
+
+To use the streaming stack, on Python 3.10–3.12:
+
+```bash
+pip install -r requirements-streaming.txt
+```
+
+The models in `models.py` are pure functions of a row's features, so they port
+to a streaming operator without change — that is what the weight-derived
+normalisation in Model 2 buys.
+
+---
+
+## What changed from the submitted version
+
+The original Colab export is preserved unmodified at
+[`legacy/capstone1_colab.py`](legacy/capstone1_colab.py). It did not run: it
+began with `!pip install`, shadowed `datetime` so the windowing call raised
+`AttributeError`, counted each lot's own repeated rows as 1,312 nearby
+competitors, priced an empty lot at 327 against a base of 10, and collapsed all
+14 lots into a single price per day.
+
+**[`docs/model-changes.md`](docs/model-changes.md) documents all ten defects,**
+each verified against the committed output files, along with what was
+deliberately *not* changed and the limitations that remain.
+
+---
+
+## Report
+
+[Dynamic Pricing for Urban Parking Lots](Dynamic_Pricing_for_Urban_ParkingLots.pdf) (PDF, in this repository)
+
+## Tech stack
+
+Python 3.10+ · pandas · NumPy · Matplotlib · pytest.
+Optional: Pathway, Bokeh, Panel for the streaming path.
